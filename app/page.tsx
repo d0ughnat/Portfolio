@@ -1,103 +1,435 @@
-import Image from "next/image";
+"use client"
+import React, { useState, useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { useRouter } from "next/navigation"
+import AICodeEntrance from "../components/AICodeEntrance"
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+// Navigation data
+const projects = [
+  {
+    id: 1,
+    title: "Home",
+    year: "",
+    href: "/home",
+    component: "home"
+  },
+  {
+    id: 2,
+    title: "About",
+    year: "",
+    href: "/about",
+    component: "about"
+  },
+  {
+    id: 3,
+    title: "Projects",
+    year: "",
+    href: "/projects",
+    component: "projects"
+  },
+  {
+    id: 4,
+    title: "Contact",
+    year: "",
+    href: "/contact",
+    component: "contact"
+  }
+]
+    
+export default function Page() {
+    const [showEntrance, setShowEntrance] = useState(false)
+    const [isTransitioning, setIsTransitioning] = useState(false)
+    const [isClient, setIsClient] = useState(false)
+    const projectRefs = useRef<(HTMLElement | null)[]>([])
+    const morphShapeRef = useRef<SVGPathElement>(null)
+    const router = useRouter()
+    
+    // Check if this is the first visit and set up entrance animation
+    useEffect(() => {
+        setIsClient(true)
+        
+        // Check if user has seen the entrance animation before
+        const hasSeenEntrance = sessionStorage.getItem('hasSeenAIEntrance')
+        
+        if (!hasSeenEntrance) {
+            setShowEntrance(true)
+        }
+    }, [])
+    
+    // Handle entrance completion
+    const handleEntranceComplete = () => {
+        sessionStorage.setItem('hasSeenAIEntrance', 'true')
+        setShowEntrance(false)
+    }
+    
+    // Handle client-side hydration and background animations
+    useEffect(() => {
+        if (!showEntrance && isClient) {
+            // Animate the grid background with more movement
+            gsap.to(".grid-line", {
+                duration: 20,
+                y: "100vh",
+                ease: "none",
+                repeat: -1,
+                stagger: {
+                    each: 0.1,
+                    repeat: -1
+                }
+            })
+            
+            gsap.to(".grid-line[data-direction='horizontal']", {
+                duration: 25,
+                x: "100vw",
+                ease: "none",
+                repeat: -1,
+                stagger: {
+                    each: 0.15,
+                    repeat: -1
+                }
+            })
+            
+            gsap.to(".grid-dot", {
+                duration: 15,
+                rotation: 360,
+                ease: "none",
+                repeat: -1,
+                stagger: 0.2
+            })
+            
+            // Floating animation for dots
+            gsap.to(".grid-dot", {
+                duration: 8,
+                y: "-=50",
+                x: "+=30",
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true,
+                stagger: 0.3
+            })
+            
+            // Moving starfield
+            gsap.to(".star", {
+                duration: 30,
+                x: "-100vw",
+                ease: "none",
+                repeat: -1,
+                stagger: 0.1
+            })
+        }
+    }, [showEntrance, isClient])
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    // GSAP Glitch Typing Animation
+    useEffect(() => {
+        if (!showEntrance && isClient) {
+            const animateGlitchText = (element: HTMLElement, text: string, delay: number) => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'
+                let iterations = 0
+                
+                const tl = gsap.timeline({ delay })
+                
+                // Initial glitch effect - made longer
+                tl.to(element, {
+                    duration: 0.05,
+                    repeat: 25,
+                    yoyo: true,
+                    skewX: () => gsap.utils.random(-20, 20),
+                    scaleX: () => gsap.utils.random(0.8, 1.2),
+                    x: () => gsap.utils.random(-8, 8),
+                    y: () => gsap.utils.random(-4, 4),
+                    ease: "power2.inOut"
+                })
+                
+                // Typing effect with glitch
+                .add(() => {
+                    const interval = setInterval(() => {
+                        element.innerText = text
+                            .split("")
+                            .map((char, index) => {
+                                if (index < iterations) {
+                                    return text[index]
+                                }
+                                return chars[Math.floor(Math.random() * chars.length)]
+                            })
+                            .join("")
+                        
+                        if (iterations >= text.length) {
+                            clearInterval(interval)
+                            element.innerText = text
+                        }
+                        
+                        iterations += 1 / 3
+                    }, 50)
+                })
+                
+                // Final stabilization
+                .to(element, {
+                    duration: 0.3,
+                    skewX: 0,
+                    x: 0,
+                    y: 0,
+                    scaleX: 1,
+                    ease: "power2.out"
+                }, "+=1")
+            }
+            
+            // Animate each project title with staggered delays
+            projectRefs.current.forEach((ref, index) => {
+                if (ref) {
+                    const titleElement = ref.querySelector('.project-title') as HTMLElement
+                    if (titleElement) {
+                        const project = projects[index]
+                        animateGlitchText(titleElement, project.title, index * 0.2)
+                    }
+                }
+            })
+        }
+    }, [showEntrance, isClient])
+
+    const handleProjectHover = (componentId: string, element: HTMLElement) => {
+        // GSAP hover glitch effect - longer and more intense
+        gsap.to(element.querySelector('.project-title'), {
+            duration: 0.08,
+            repeat: 8,
+            yoyo: true,
+            skewX: () => gsap.utils.random(-8, 8),
+            x: () => gsap.utils.random(-4, 4),
+            y: () => gsap.utils.random(-2, 2),
+            scaleX: () => gsap.utils.random(0.95, 1.05),
+            ease: "power2.inOut",
+            onComplete: () => {
+                gsap.set(element.querySelector('.project-title'), {
+                    skewX: 0,
+                    x: 0,
+                    y: 0,
+                    scaleX: 1
+                })
+            }
+        })
+    }
+
+    const handleProjectsLeave = () => {
+        // No background component to hide anymore
+    }
+
+    // Void eating transition effect
+    const handlePageTransition = (href: string, element: HTMLElement) => {
+        if (isTransitioning) return
+        
+        setIsTransitioning(true)
+        
+        // Get element position for void origin
+        const rect = element.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        
+        // Create void eating timeline
+        const tl = gsap.timeline({
+            onComplete: () => {
+                router.push(href)
+            }
+        })
+
+        // Initial void (tiny black hole at click position)
+        const initialPath = `M ${centerX},${centerY} C ${centerX},${centerY} ${centerX},${centerY} ${centerX},${centerY} C ${centerX},${centerY} ${centerX},${centerY} ${centerX},${centerY} C ${centerX},${centerY} ${centerX},${centerY} ${centerX},${centerY} C ${centerX},${centerY} ${centerX},${centerY} ${centerX},${centerY} Z`
+        
+        // Void consuming - irregular, organic eating pattern
+        const voidPath1 = `M ${centerX-80},${centerY-60} C ${centerX-120},${centerY-100} ${centerX+100},${centerY-80} ${centerX+120},${centerY+40} C ${centerX+90},${centerY+100} ${centerX-60},${centerY+120} ${centerX-100},${centerY+30} C ${centerX-110},${centerY-20} ${centerX-95},${centerY-40} ${centerX-80},${centerY-60} Z`
+        
+        // Void expanding - massive irregular consumption spreading across screen
+        const voidPath2 = `M ${centerX-400},${centerY-300} C ${centerX-600},${centerY-450} ${centerX+500},${centerY-400} ${centerX+480},${centerY+150} C ${centerX+420},${centerY+400} ${centerX-350},${centerY+450} ${centerX-480},${centerY+120} C ${centerX-520},${centerY-80} ${centerX-480},${centerY-200} ${centerX-400},${centerY-300} Z`
+        
+        // Void devouring - aggressive tentacle-like extensions reaching screen edges
+        const voidPath3 = `M ${centerX-800},${centerY-600} C ${centerX-1200},${centerY-800} ${centerX+900},${centerY-700} ${centerX+850},${centerY+300} C ${centerX+750},${centerY+700} ${centerX-650},${centerY+800} ${centerX-850},${centerY+250} C ${centerX-950},${centerY-150} ${centerX-880},${centerY-350} ${centerX-800},${centerY-600} Z`
+        
+        // Final void consumption - complete screen coverage with chaotic edges
+        const finalPath = `M -200,-200 C -400,-400 ${window.innerWidth+400},-300 ${window.innerWidth+200},0 C ${window.innerWidth+300},${window.innerHeight/4} ${window.innerWidth+250},${window.innerHeight*0.8} ${window.innerWidth+200},${window.innerHeight+200} C ${window.innerWidth-100},${window.innerHeight+400} -100,${window.innerHeight+300} -200,${window.innerHeight+200} C -300,${window.innerHeight*0.7} -250,${window.innerHeight*0.2} -200,-200 Z`
+
+        // Set initial path
+        gsap.set(morphShapeRef.current, { attr: { d: initialPath } })
+        
+        // Void eating animation sequence - faster and more aggressive
+        tl.to(morphShapeRef.current, {
+            duration: 0.15,
+            attr: { d: voidPath1 },
+            ease: "power3.out"
+        })
+        .to(morphShapeRef.current, {
+            duration: 0.2,
+            attr: { d: voidPath2 },
+            ease: "power3.inOut"
+        })
+        .to(morphShapeRef.current, {
+            duration: 0.25,
+            attr: { d: voidPath3 },
+            ease: "power3.inOut"
+        })
+        .to(morphShapeRef.current, {
+            duration: 0.3,
+            attr: { d: finalPath },
+            ease: "power4.inOut"
+        })
+        .to(".main-content", {
+            duration: 0.3,
+            opacity: 0,
+            scale: 0.5,
+            filter: "blur(20px)",
+            ease: "power3.inOut"
+        }, "-=0.5")
+
+        // Void consumption glitch effect
+        gsap.to(element.querySelector('.project-title'), {
+            duration: 0.03,
+            repeat: 20,
+            yoyo: true,
+            skewX: () => gsap.utils.random(-30, 30),
+            x: () => gsap.utils.random(-15, 15),
+            scaleX: () => gsap.utils.random(0.7, 1.3),
+            opacity: () => gsap.utils.random(0.3, 1),
+            ease: "power2.inOut"
+        })
+        
+        // Background distortion effect - more chaotic screen consumption
+        gsap.to(".grid-line, .grid-dot, .star", {
+            duration: 0.6,
+            scale: () => gsap.utils.random(0.2, 3),
+            rotation: () => gsap.utils.random(-360, 360),
+            x: () => gsap.utils.random(-200, 200),
+            y: () => gsap.utils.random(-200, 200),
+            opacity: 0,
+            ease: "power3.inOut",
+            stagger: 0.01
+        })
+    }
+
+    return (
+        <main className="min-h-screen relative overflow-hidden">
+            {/* AI Code Entrance Animation */}
+            {showEntrance && (
+                <AICodeEntrance onComplete={handleEntranceComplete} />
+            )}
+
+            {/* Main Portfolio Interface */}
+            {!showEntrance && (
+                <>
+                    {/* Void Overlay */}
+                    <svg 
+                        className="fixed inset-0 w-full h-full pointer-events-none z-50"
+                        viewBox="0 0 1920 1080"
+                        preserveAspectRatio="none"
+                    >
+                        <defs>
+                            <radialGradient id="voidGradient" cx="50%" cy="50%">
+                                <stop offset="0%" stopColor="rgba(0, 0, 0, 1)" />
+                                <stop offset="70%" stopColor="rgba(20, 0, 40, 0.98)" />
+                                <stop offset="100%" stopColor="rgba(40, 0, 80, 0.95)" />
+                            </radialGradient>
+                        </defs>
+                        <path
+                            ref={morphShapeRef}
+                            fill="url(#voidGradient)"
+                            d=""
+                            style={{
+                                filter: "drop-shadow(0 0 20px rgba(0, 0, 0, 0.8))"
+                            }}
+                        />
+                    </svg>
+
+                    <div className="main-content">
+                        {/* Animated Space Grid Background */}
+                        <div 
+                            className="fixed inset-0 w-full h-full overflow-hidden"
+                            style={{ zIndex: -2 }}
+                        >
+                            {/* Grid Lines */}
+                            <div className="absolute inset-0">
+                                {Array.from({ length: 20 }).map((_, i) => (
+                                    <div
+                                        key={`v-${i}`}
+                                        className="grid-line absolute h-full w-px bg-gradient-to-b from-transparent via-purple-500/20 to-transparent"
+                                        style={{
+                                            left: `${(i + 1) * 5}%`,
+                                            transform: `translateY(-100vh)`
+                                        }}
+                                    />
+                                ))}
+                                {Array.from({ length: 15 }).map((_, i) => (
+                                    <div
+                                        key={`h-${i}`}
+                                        className="grid-line absolute w-full h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"
+                                        data-direction="horizontal"
+                                        style={{
+                                            top: `${(i + 1) * 6.67}%`,
+                                            transform: `translateX(-100vw)`
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                            
+                            {/* Moving Dots */}
+                            <div className="absolute inset-0">
+                                {Array.from({ length: 50 }).map((_, i) => (
+                                    <div
+                                        key={`dot-${i}`}
+                                        className="grid-dot absolute w-2 h-2 bg-cyan-400/60 rounded-full shadow-lg shadow-cyan-400/20"
+                                        style={{
+                                            left: `${Math.random() * 100}%`,
+                                            top: `${Math.random() * 100}%`,
+                                            animationDelay: `${Math.random() * 5}s`
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                            
+                            {/* Moving Starfield */}
+                            <div className="absolute inset-0">
+                                {Array.from({ length: 100 }).map((_, i) => (
+                                    <div
+                                        key={`star-${i}`}
+                                        className="star absolute w-1 h-1 bg-white/50 rounded-full animate-pulse"
+                                        style={{
+                                            left: `${100 + Math.random() * 20}%`,
+                                            top: `${Math.random() * 100}%`,
+                                            animationDelay: `${Math.random() * 3}s`,
+                                            animationDuration: `${2 + Math.random() * 3}s`
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Navigation Gallery - Centered */}
+                        <div className="min-h-screen flex items-center justify-center">
+                            <div 
+                                className="projects-container flex flex-col items-center justify-center min-h-screen"
+                                onMouseLeave={handleProjectsLeave}
+                            >
+                                {projects.map((project, index) => (
+                                    <div
+                                        className="project-item text-center group text-6xl md:text-8xl lg:text-9xl mask-radial-from-neutral-700 cursor-pointer mb-8"
+                                        key={project.id}
+                                        ref={(el) => { projectRefs.current[index] = el }}
+                                        onMouseEnter={(e) => handleProjectHover(project.component, e.currentTarget)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handlePageTransition(project.href, e.currentTarget);
+                                        }}
+                                        style={{
+                                            animationDelay: `${index * 60}ms`,
+                                            opacity: 0,
+                                            transform: "translateY(20px)",
+                                            animation: "slideInUp 0.8s ease forwards"
+                                        }}
+                                    >
+                                        <div className="project-title">
+                                            {project.title}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+        </main>
+    )
 }

@@ -1,5 +1,774 @@
 @import "tailwindcss";
 
+
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --warm-off-black: #1a1917;
+  --warm-off-white: #f8f5f2;
+  --background: #1a1917;
+  --foreground: #f8f5f2;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Galgo", "PP Neue Montreal", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--warm-off-black);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--warm-off-white);
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Animated noise effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent
+    url("http://assets.iceable.com/img/noise-transparent.png") repeat 0 0;
+  background-size: 300px 300px;
+  animation: noise-animation 0.3s steps(5) infinite;
+  opacity: 0.9;
+  will-change: transform;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@keyframes noise-animation {
+  0% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-2%, -3%);
+  }
+  20% {
+    transform: translate(-4%, 2%);
+  }
+  30% {
+    transform: translate(2%, -4%);
+  }
+  40% {
+    transform: translate(-2%, 5%);
+  }
+  50% {
+    transform: translate(-4%, 2%);
+  }
+  60% {
+    transform: translate(3%, 0);
+  }
+  70% {
+    transform: translate(0, 3%);
+  }
+  80% {
+    transform: translate(-3%, 0);
+  }
+  90% {
+    transform: translate(2%, 2%);
+  }
+  100% {
+    transform: translate(1%, 0);
+  }
+}
+.container {
+  width: 100%;
+  max-width: 1000px; /* Increased width */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+}
+
+/* Full-screen background image */
+#background-image-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.2); /* Start zoomed in */
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+}
+
+/* Projects Container - Centered Navigation */
+.projects-container {
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 20px;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.projects-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Project Item Styles - Centered Navigation with Glass Effect */
+.project-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  cursor: pointer;
+  text-align: center;
+  min-width: 300px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  backdrop-filter: blur(0px);
+  border: 1px solid transparent;
+}
+
+/* Glass effect on hover */
+.project-item:hover {
+  backdrop-filter: blur(20px);
+  background: rgba(248, 245, 242, 0.1);
+  border: 1px solid rgba(248, 245, 242, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
+}
+
+/* Project title - larger for navigation with glitch support */
+.project-title {
+  font-size: 3rem;
+  position: relative;
+  z-index: 2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+  font-family: 'Galgo', 'PP Neue Montreal', monospace;
+  text-rendering: optimizeSpeed;
+  will-change: transform, filter;
+}
+
+.project-item:hover .project-title {
+  text-shadow: 
+    0 0 30px rgba(248, 245, 242, 0.3),
+    2px 0 0 rgba(255, 0, 255, 0.4),
+    -2px 0 0 rgba(0, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+/* Glitch effect enhancement */
+.project-title::before,
+.project-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project-title::before {
+  animation: glitch-1 0.3s infinite;
+  color: rgba(255, 0, 255, 0.6);
+  z-index: -1;
+}
+
+.project-title::after {
+  animation: glitch-2 0.3s infinite;
+  color: rgba(0, 255, 255, 0.6);
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 14%, 15%, 49%, 50%, 99%, 100% {
+    transform: translate(0);
+    opacity: 0;
+  }
+  15%, 49% {
+    transform: translate(-2px, -1px);
+    opacity: 1;
+  }
+  50%, 99% {
+    transform: translate(1px, -2px);
+    opacity: 1;
+  }
+}
+
+@keyframes glitch-2 {
+  0%, 20%, 21%, 62%, 63%, 99%, 100% {
+    transform: translate(0);
+    opacity: 0;
+  }
+  21%, 62% {
+    transform: translate(2px, 1px);
+    opacity: 1;
+  }
+  63%, 99% {
+    transform: translate(-1px, 2px);
+    opacity: 1;
+  }
+}
+
+/* Cyberpunk glow effect */
+.project-item:hover .project-title {
+  animation: cyberpunk-glow 0.1s ease-in-out;
+}
+
+@keyframes cyberpunk-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 30px rgba(248, 245, 242, 0.3),
+      2px 0 0 rgba(255, 0, 255, 0.4),
+      -2px 0 0 rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    text-shadow: 
+      0 0 40px rgba(248, 245, 242, 0.5),
+      3px 0 0 rgba(255, 0, 255, 0.6),
+      -3px 0 0 rgba(0, 255, 255, 0.6);
+  }
+}
+
+.project-year {
+  display: none; /* Hide year for navigation */
+}
+
+/* Remove the old blend mode effect and replace with glass */
+.project-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.project-item:hover::before {
+  opacity: 1;
+}
+
+/* Glass reflection effect */
+.project-item::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 100%
+  );
+  border-radius: 20px 20px 0 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.project-item:hover::after {
+  opacity: 1;
+}
+
+/* Animation for staggered project items */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .project-title,
+  .project-year {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* GSAP-optimized Navigation Styles */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+  /* Remove CSS animations - handled by GSAP */
+}
+
+.nav-container {
+  /* GSAP handles all animations for this container */
+  will-change: transform, opacity;
+}
+
+.animated-bg {
+  background: linear-gradient(
+    -45deg,
+    var(--background),
+    color-mix(in srgb, var(--background) 95%, var(--foreground) 5%),
+    var(--background),
+    color-mix(in srgb, var(--background) 97%, var(--foreground) 3%)
+  );
+  background-size: 400% 400%;
+  /* Background animation handled by GSAP */
+}
+
+/* Shimmer effect for GSAP */
+.shimmer {
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nav-item {
+    font-size: 3rem;
+  }
+}
+
+
+@layer normalize, base, demo, blurring, debug;
+
+@layer blurring {
+  :root {
+    --layers: 5;
+    --blur-max: 40;
+    --mask-stop: 25;
+  }
+  .blur {
+    div {
+      --blur: calc(
+        sin(((var(--layers) - var(--i)) / var(--layers)) * 90deg) *
+          var(--blur-max)
+      );
+      --stop: calc(
+        sin(((var(--i)) / var(--layers)) * 90deg) * var(--mask-stop)
+      );
+      position: absolute;
+      inset: 0;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0 -250%;
+        backdrop-filter: blur(calc(var(--blur) * 1px));
+        mask: linear-gradient(
+          180deg,
+          #0000 0 calc((100 - var(--stop)) * 1%),
+          #000 100%
+        );
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(var(--stop) * 1%);
+        z-index: 20000;
+      }
+    }
+  }
+}
+
+@layer debug {
+  .blur::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .label {
+    grid-area: 1 / 2;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    opacity: 0;
+    transition: opacity 0.26s ease-out;
+  }
+
+  .label::after {
+    content: 'blur overlay';
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    background: hsl(0 90% 50%);
+    font-family: 'Special Elite', system-ui;
+    text-shadow: 0 1px #111;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: rotate(-90deg) translateX(100%);
+    transform-origin: 0 100%;
+    z-index: 2;
+  }
+
+  .label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.5;
+    background: repeating-linear-gradient(
+      45deg,
+      #0000 0 8px,
+      hsl(0 90% 50%) 8px 10px
+    );
+  }
+
+  .blur::after,
+  .blur div::before {
+    outline: 4px dashed #0000;
+    transition: outline-color 0.26s ease-out;
+  }
+
+  [data-debug='true'] .blur::after,
+  [data-debug='true'] .blur div::before {
+    outline-color: hsl(0 90% 50%);
+  }
+
+  [data-debug='true'] .label {
+    opacity: 1;
+  }
+
+  [data-debug='true'] header div:first-of-type {
+    opacity: 0.25;
+  }
+
+  .blur div::before {
+    clip-path: inset(-100% 0 -100% 0);
+  }
+}
+
+@layer demo {
+  :root {
+    --img-size: clamp(120px, 40vmin, 380px);
+    scrollbar-color: hsl(0 90% 50%) #0000;
+  }
+
+  .clear {
+    padding: 0.5rem 0.75rem;
+    display: inline-block;
+    border: 2px solid canvasText;
+    margin-top: 0.5rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+    width: fit-content;
+
+    &:is(:focus-visible, :hover) {
+      color: canvas;
+      background-color: canvasText;
+    }
+  }
+
+  .content {
+    width: 1200px;
+    max-width: calc(100vw - 2rem);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  header {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+  }
+
+  header > div:first-of-type {
+    position: sticky;
+    top: 0;
+    height: fit-content;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-area: 1 / 1;
+    width: fit-content;
+    max-width: 280px;
+    text-wrap: balance;
+    z-index: 2000;
+    transition: opacity 0.26s ease-out;
+
+    h1 {
+      font-size: 0.875rem !important;
+      margin: 0;
+      background: hsl(0 90% 50%);
+      text-shadow: 0 1px #111;
+      translate: -10% 10%;
+      rotate: -6deg;
+      z-index: -1;
+      padding: 0.25rem;
+      font-family: 'PP Neue Montreal', system-ui, -apple-system, sans-serif;
+      text-transform: uppercase;
+      display: inline-grid;
+      width: fit-content;
+      place-items: center;
+    }
+    p {
+      font-weight: 300;
+      margin: 0;
+      line-height: 1.5;
+      margin-block: 1rem;
+    }
+    p:first-of-type {
+      line-height: 1;
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .blur {
+    grid-area: 1 / 2;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    justify-self: center;
+  }
+
+  header > ul {
+    grid-area: 1 / 2;
+    padding: 0;
+    padding-block: calc((var(--padding) * 1vh) - (var(--img-size) * 0.5));
+    list-style-type: none;
+    gap: 6rem;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+
+    li {
+      width: var(--img-size);
+      aspect-ratio: 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        filter: contrast(1.1) saturate(var(--saturate, 0.1));
+      }
+    }
+  }
+
+  footer {
+    opacity: 0.7;
+    font-size: 0.875rem;
+    padding: 2rem;
+  }
+
+  body {
+    display: block;
+    overflow-x: hidden;
+  }
+}
+
+@layer base {
+  :root {
+    --font-size-min: 16;
+    --font-size-max: 20;
+    --font-ratio-min: 1.2;
+    --font-ratio-max: 1.33;
+    --font-width-min: 375;
+    --font-width-max: 1500;
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  [data-theme='light'] {
+    color-scheme: light only;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark only;
+  }
+
+  :where(.fluid) {
+    --fluid-min: calc(
+      var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0))
+    );
+    --fluid-max: calc(
+      var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0))
+    );
+    --fluid-preferred: calc(
+      (var(--fluid-max) - var(--fluid-min)) /
+        (var(--font-width-max) - var(--font-width-min))
+    );
+    --fluid-type: clamp(
+      (var(--fluid-min) / 16) * 1rem,
+      ((var(--fluid-min) / 16) * 1rem) -
+        (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) +
+        (var(--fluid-preferred) * var(--variable-unit, 100vi)),
+      (var(--fluid-max) / 16) * 1rem
+    );
+    font-size: var(--fluid-type);
+  }
+
+  *,
+  *:after,
+  *:before {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: light-dark(#fff, #000);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: 'PP Neue Montreal', system-ui, -apple-system, sans-serif;
+  }
+
+  body::before {
+    --size: 45px;
+    --line: color-mix(in hsl, canvasText, transparent 80%);
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background: linear-gradient(
+          90deg,
+          var(--line) 1px,
+          transparent 1px var(--size)
+        )
+        calc(var(--size) * 0.36) 50% / var(--size) var(--size),
+      linear-gradient(var(--line) 1px, transparent 1px var(--size)) 0%
+        calc(var(--size) * 0.32) / var(--size) var(--size);
+    mask: linear-gradient(-20deg, transparent 50%, white);
+    top: 0;
+    transform-style: flat;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .bear-link {
+    color: canvasText;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 48px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    opacity: 0.8;
+  }
+
+  :where(.x-link, .bear-link):is(:hover, :focus-visible) {
+    opacity: 1;
+  }
+
+  .bear-link svg {
+    width: 75%;
+  }
+
+  /* Utilities */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+div.tp-dfwv {
+  position: fixed;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -22,5 +791,155 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'PP Neue Montreal', Arial, Helvetica, sans-serif;
+}
+
+/* GSAP Gallery Styles */
+.gsap-gallery {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.gsap-gallery .background-image {
+  will-change: transform, opacity;
+  transition: opacity 0.5s ease;
+}
+
+.gsap-gallery .projects-container {
+  will-change: transform, opacity;
+  position: relative;
+  z-index: 10;
+}
+
+.gsap-gallery .project-item {
+  will-change: transform, opacity;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.gsap-gallery .project-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.gsap-gallery .project-title,
+.gsap-gallery .project-year {
+  will-change: color, text-shadow;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Enhanced backdrop blur for project items */
+.gsap-gallery .project-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gsap-gallery .project-item:hover::before {
+  opacity: 1;
+}
+
+/* Projects Showcase Styles */
+.projects-container .project-item {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity, background-color;
+  position: relative;
+  overflow: hidden;
+}
+
+.projects-container .project-item:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.projects-container .project-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.projects-container .project-item:hover::before {
+  opacity: 1;
+}
+
+.project-title {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.project-item:hover .project-title {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Text shadow utility */
+.text-shadow-lg {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation for staggered project items */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments for GSAP gallery */
+@media (max-width: 768px) {
+  .gsap-gallery .projects-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .gsap-gallery .project-item {
+    padding: 1rem;
+  }
+  
+  .gsap-gallery .project-title {
+    font-size: 1.25rem;
+  }
+
+  .projects-container {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    padding: 1rem !important;
+  }
+  
+  .project-item {
+    padding: 1rem !important;
+  }
+  
+  .project-title {
+    font-size: 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .gsap-gallery .projects-container {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .projects-container {
+    gap: 1rem !important;
+    padding: 0.5rem !important;
+  }
 }

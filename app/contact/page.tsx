@@ -58,8 +58,8 @@ export default function Page() {
         {
             type: 'email',
             title: 'Email',
-            value: 'nathaniel.ledesma@example.com',
-            display: 'nathaniel.ledesma@example.com',
+            value: 'nledesma35@gmail.com',
+            display: 'nledesma35@gmail.com',
             color: 'emerald',
             icon: (
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
